@@ -3,7 +3,7 @@ import colorsys
 from PIL import Image
 sys.path.insert(0, "./build/lib.linux-armv7l-2.7")
 
-import MLX90640 as x
+import MLX90640 as mlx
 
 img = Image.new( 'RGB', (24,32), "black")
 
@@ -15,9 +15,8 @@ def temp_to_col(val):
 #     return tuple([int(c*255) for c in colorsys.hsv_to_rgb(1.0, 0.0, val/50.0)])
 
 
-x.setup(16)
-f = x.get_frame()
-x.cleanup()
+mlx.setup(16)
+f = mlx.get_frame()
 
 v_min = min(f)
 v_max = max(f)
