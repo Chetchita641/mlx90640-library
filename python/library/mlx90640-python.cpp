@@ -112,7 +112,7 @@ uint16_t * get_raw(void)
 	int subpage;
 	bool subpages[2] = {0,0};
 
-	uint16_t frame[834];
+	static uint16_t frame[834];
 
 	while (retries-- && (!subpages[0] || !subpages[1])){
 #ifdef DEBUG
