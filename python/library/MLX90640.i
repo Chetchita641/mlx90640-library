@@ -14,7 +14,7 @@ uint16_t * get_raw(void);
     }
 %}
 
-%typemap(out) float *get_raw %{
+%typemap(out) uint16_t *get_raw %{
     $result = PyList_New(834);
     for (int i = 0; i < 834; ++i) {
         PyList_SetItem($result, i, PyLong_FromUnsignedLong($1[i]));

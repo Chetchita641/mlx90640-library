@@ -16,6 +16,7 @@
 // to account for this.
 
 paramsMLX90640 mlx90640;
+uint16_t frame[834];
 
 extern "C" 
 {
@@ -71,7 +72,6 @@ float * get_frame(void){
 	int retries = 10;
 	int subpage;
 	bool subpages[2] = {0,0};
-	uint16_t frame[834];
 	float emissivity = 1;
 	float eTa;
 	static float mlx90640To[768];
@@ -112,8 +112,6 @@ uint16_t * get_raw(void)
 	int subpage;
 	bool subpages[2] = {0,0};
 
-	static uint16_t frame[834];
-
 	while (retries-- && (!subpages[0] || !subpages[1])){
 #ifdef DEBUG
 		printf("Retries: %d \n", retries);
@@ -128,6 +126,9 @@ uint16_t * get_raw(void)
 		subpages[subpage] = 1;
 	}
 
+	printf("frame[100] : %d \n", frame[100]); 
+	printf("frame[200] : %d \n", frame[200]); 
+	printf("frame[300] : %d \n", frame[300]); 
 	return frame;
 }
 } // extern "C"
