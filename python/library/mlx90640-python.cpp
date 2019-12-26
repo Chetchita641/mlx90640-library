@@ -126,9 +126,6 @@ uint16_t * get_raw(void)
 		subpages[subpage] = 1;
 	}
 
-	printf("frame[100] : %d \n", frame[100]); 
-	printf("frame[200] : %d \n", frame[200]); 
-	printf("frame[300] : %d \n", frame[300]); 
 	return frame;
 }
 } // extern "C"
