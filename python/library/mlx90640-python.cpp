@@ -21,7 +21,6 @@ extern "C"
 {
 int setup(int fps){
 	static uint16_t eeMLX90640[832];
-	float eTa;
 	
 	MLX90640_SetDeviceMode(MLX_I2C_ADDR, 0);
 	MLX90640_SetSubPageRepeat(MLX_I2C_ADDR, 0);
@@ -74,6 +73,7 @@ float * get_frame(void){
 	bool subpages[2] = {0,0};
 	uint16_t frame[834];
 	float emissivity = 1;
+	float eTa;
 	static float mlx90640To[768];
 
 	while (retries-- && (!subpages[0] || !subpages[1])){
