@@ -2,7 +2,7 @@
 %include "stdint.i"
 
 %{
-int setup(int fps);
+int setup(int newAddr, int fps);
 float * get_frame(void);
 uint16_t * get_raw(void);
 %}
@@ -21,6 +21,6 @@ uint16_t * get_raw(void);
     }
 %}
 
-int setup(int fps);
+int setup(int newAddr, int fps);
 float * get_frame(void);
 uint16_t * get_raw(void);

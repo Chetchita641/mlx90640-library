@@ -8,8 +8,6 @@
 #include "MLX90640/MLX90640_API.h"
 #include "MLX90640/MLX90640_I2C_Driver.h"
 
-#define MLX_I2C_ADDR 0x33
-
 // Despite the framerate being ostensibly FPS hz
 // The frame is often not ready in time
 // This offset is added to the frame time
@@ -17,43 +15,50 @@
 
 paramsMLX90640 mlx90640;
 uint16_t frame[834];
+int mlx_addr;
 
 extern "C" 
 {
-int setup(int fps){
+int setup(int addr, int fps){
 	static uint16_t eeMLX90640[832];
-	
-	MLX90640_SetDeviceMode(MLX_I2C_ADDR, 0);
-	MLX90640_SetSubPageRepeat(MLX_I2C_ADDR, 0);
+	mlx_addr = addr;
+#ifdef DEBUG
+	printf("Setting device mode\n");
+#endif	
+	MLX90640_SetDeviceMode(mlx_addr, 0);
+#ifdef DEBUG
+	printf("Set sub page repeat\n");
+#endif	
+	MLX90640_SetSubPageRepeat(mlx_addr, 0);
 
 	switch(fps){
 		case 1:
 			// baudrate = 400000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b001);
+			MLX90640_SetRefreshRate(mlx_addr, 0b001);
 			break;
 		case 2:
 			// baudrate = 400000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b010);
+			MLX90640_SetRefreshRate(mlx_addr, 0b010);
 			break;
 		case 4:
 			// baudrate = 400000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b011);
+			MLX90640_SetRefreshRate(mlx_addr, 0b011);
 			break;
 		case 8:
 			// baudrate = 400000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b100);
+			MLX90640_SetRefreshRate(mlx_addr, 0b100);
 			break;
 		case 16:
 			// baudrate = 1000000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b101);
+			MLX90640_SetRefreshRate(mlx_addr, 0b101);
 			break;
 		case 32:
 			// baudrate = 1000000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b110);
+			MLX90640_SetRefreshRate(mlx_addr, 0b110);
 			break;
 		case 64:
 			// baudrate = 1000000;
-			MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b111);
+			MLX90640_SetRefreshRate(mlx_addr, 0b111);
 			break;
 		default:
 #ifdef DEBUG
@@ -61,8 +66,17 @@ int setup(int fps){
 #endif
 			return 1;
 	}
-	MLX90640_SetChessMode(MLX_I2C_ADDR);
-	MLX90640_DumpEE(MLX_I2C_ADDR, eeMLX90640);
+#ifdef DEBUG
+	printf("Setting Chess Mode\n");
+#endif
+	MLX90640_SetChessMode(mlx_addr);
+#ifdef DEBUG
+	printf("Dump EE\n");
+#endif
+	MLX90640_DumpEE(mlx_addr, eeMLX90640);
+#ifdef DEBUG
+	printf("Extract Parameters\n");
+#endif
 	MLX90640_ExtractParameters(eeMLX90640, &mlx90640);
 
 	return 0;
@@ -81,7 +95,7 @@ float * get_frame(void){
 		printf("Retries: %d \n", retries);
 #endif
 
-		MLX90640_GetFrameData(MLX_I2C_ADDR, frame);
+		MLX90640_GetFrameData(mlx_addr, frame);
 #ifdef DEBUG
 		printf("Got data for page %d\n", MLX90640_GetSubPageNumber(frame));
 #endif
@@ -117,7 +131,7 @@ uint16_t * get_raw(void)
 		printf("Retries: %d \n", retries);
 #endif
 
-		MLX90640_GetFrameData(MLX_I2C_ADDR, frame);
+		MLX90640_GetFrameData(mlx_addr, frame);
 #ifdef DEBUG
 		printf("Got data for page %d\n", MLX90640_GetSubPageNumber(frame));
 #endif

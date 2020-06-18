@@ -8,7 +8,7 @@
 #include "headers/MLX90640_API.h"
 #include "lib/fb.h"
 
-#define MLX_I2C_ADDR 0x33
+#define MLX_I2C_ADDR 0x77
 
 #define IMAGE_SCALE 5
 
@@ -58,7 +58,7 @@ void put_pixel_false_colour(int x, int y, double v) {
     }
 }
 
-int main(){
+int main(int argc, char** argv){
     static uint16_t eeMLX90640[832];
     float emissivity = 1;
     uint16_t frame[834];
@@ -69,45 +69,53 @@ int main(){
 
     auto frame_time = std::chrono::microseconds(FRAME_TIME_MICROS + OFFSET_MICROS);
 
-    MLX90640_SetDeviceMode(MLX_I2C_ADDR, 0);
-    MLX90640_SetSubPageRepeat(MLX_I2C_ADDR, 0);
+    int addr;
+    if (argc > 1) {
+	addr = strtol(argv[1], NULL, 16);
+	addr = (0xbe << 8) | addr;
+    }
+    else
+	addr = MLX_I2C_ADDR; 
+     
+    MLX90640_SetDeviceMode(addr, 0);
+    MLX90640_SetSubPageRepeat(addr, 0);
     switch(FPS){
         case 1:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b001);
+            MLX90640_SetRefreshRate(addr, 0b001);
             break;
         case 2:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b010);
+            MLX90640_SetRefreshRate(addr, 0b010);
             break;
         case 4:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b011);
+            MLX90640_SetRefreshRate(addr, 0b011);
             break;
         case 8:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b100);
+            MLX90640_SetRefreshRate(addr, 0b100);
             break;
         case 16:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b101);
+            MLX90640_SetRefreshRate(addr, 0b101);
             break;
         case 32:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b110);
+            MLX90640_SetRefreshRate(addr, 0b110);
             break;
         case 64:
-            MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b111);
+            MLX90640_SetRefreshRate(addr, 0b111);
             break;
         default:
             printf("Unsupported framerate: %d", FPS);
             return 1;
     }
-    MLX90640_SetChessMode(MLX_I2C_ADDR);
+    MLX90640_SetChessMode(addr);
 
     paramsMLX90640 mlx90640;
-    MLX90640_DumpEE(MLX_I2C_ADDR, eeMLX90640);
+    MLX90640_DumpEE(addr, eeMLX90640);
     MLX90640_ExtractParameters(eeMLX90640, &mlx90640);
 
     fb_init();
 
     while (1){
         auto start = std::chrono::system_clock::now();
-        auto error = MLX90640_GetFrameData(MLX_I2C_ADDR, frame);
+        auto error = MLX90640_GetFrameData(addr, frame);
         if (error < 0) {
 	    printf("Failed to get frame data.\n");
 	    exit(1);

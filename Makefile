@@ -5,7 +5,7 @@ SRC_DIR = examples/src/
 BUILD_DIR = examples/
 LIB_DIR = $(SRC_DIR)lib/
 
-examples = test rawrgb step fbuf interp video hotspot sdlscale 
+examples = test setaddr rawrgb step fbuf-black fbuf-silver interp video hotspot sdlscale 
 examples_objects = $(addsuffix .o,$(addprefix $(SRC_DIR), $(examples)))
 examples_output = $(addprefix $(BUILD_DIR), $(examples))
 
@@ -48,13 +48,19 @@ $(BUILD_DIR)hotspot: $(SRC_DIR)hotspot.o $(LIB_DIR)fb.o libMLX90640_API.a
 $(BUILD_DIR)test: $(SRC_DIR)test.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
 
+$(BUILD_DIR)setaddr: $(SRC_DIR)setaddr.o libMLX90640_API.a
+	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
+
 $(BUILD_DIR)rawrgb: $(SRC_DIR)rawrgb.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
 
 $(BUILD_DIR)step: $(SRC_DIR)step.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
 
-$(BUILD_DIR)fbuf: $(SRC_DIR)fbuf.o $(LIB_DIR)fb.o libMLX90640_API.a
+$(BUILD_DIR)fbuf-black: $(SRC_DIR)fbuf-black.o $(LIB_DIR)fb.o libMLX90640_API.a
+	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
+
+$(BUILD_DIR)fbuf-silver: $(SRC_DIR)fbuf-silver.o $(LIB_DIR)fb.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
 
 $(BUILD_DIR)interp: $(SRC_DIR)interp.o $(LIB_DIR)interpolate.o $(LIB_DIR)fb.o libMLX90640_API.a
